@@ -31,11 +31,6 @@
             <version>15.0.0</version>
             <classifier>jakarta</classifier>
         </dependency>
-        <dependency>
-            <groupId>org.webjars.npm</groupId>
-            <artifactId>primeflex</artifactId>
-            <version>3.3.1</version>
-        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>

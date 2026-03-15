@@ -12,6 +12,7 @@ import pedroleonez.jsfff.service.TarefaService;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,6 +101,10 @@ public class TarefaBean implements Serializable {
     private void adicionarMensagem(String resumo, String detalhe) {
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, resumo, detalhe));
+    }
+
+    public LocalDate getDataAtual() {
+        return LocalDate.now();
     }
 
     // Getters e Setters para os Filtros

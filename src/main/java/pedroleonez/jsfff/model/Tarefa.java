@@ -1,6 +1,9 @@
 package pedroleonez.jsfff.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
@@ -9,11 +12,21 @@ public class Tarefa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "O título é obrigatório")
     private String titulo;
+
+    @NotBlank(message = "A descrição é obrigatória")
     private String descricao;
+
+    @NotBlank(message = "O responsável é obrigatório")
     private String responsavel;
+
+    @NotNull(message = "O deadline é obrigatório")
+    @FutureOrPresent(message = "A data não pode ser no passado")
     private LocalDate deadline;
 
+    @NotNull(message = "A prioridade é obrigatória")
     @Enumerated(EnumType.STRING)
     private Prioridade prioridade;
 
