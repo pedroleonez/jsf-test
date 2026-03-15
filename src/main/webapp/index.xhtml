@@ -34,13 +34,6 @@
             <p:menubar>
                 <p:menuitem value="Gerenciador de Tarefas" disabled="true"
                             style="font-weight: bold; color: #333; opacity: 1;" />
-
-                <f:facet name="options">
-                    <p:button value="Início" icon="pi pi-home" outcome="index"
-                              styleClass="ui-button-flat mr-2" />
-                    <p:button value="Sobre" icon="pi pi-info-circle" outcome="sobre"
-                              styleClass="ui-button-flat" />
-                </f:facet>
             </p:menubar>
         </h:form>
     </div>
@@ -136,14 +129,10 @@
     </div>
 
     <div class="footer">
-        <h:outputLink value="https://www.esig.com.br" target="_blank" styleClass="footer-logo">
-            <p:graphicImage library="images" name="logo-empresa.png" alt="Logo Empresa"
-                            rendered="false" />
-            <h:outputText value="ESIG Group" style="font-weight: bold; font-size: 1.2rem; color: #007ad9;" />
+        <h:outputLink value="https://www.esig.com.br" target="_blank">
+            <p:graphicImage library="images" name="logo-esig.webp" alt="Logo ESIG" />
         </h:outputLink>
-        <p style="color: #6c757d; font-size: 0.9rem; margin-top: 10px;">
-            © 2026 Desenvolvido por Pedro Leonez durante Teste Técnico.
-        </p>
+        <p>© 2026 Desenvolvido por Pedro Leonez</p>
     </div>
 
     <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
