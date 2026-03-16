@@ -43,9 +43,8 @@ body {
 }
 
 .app-title {
-    font-weight: bold;
+    font-weight: 700 !important;
     font-size: 2rem;
-    opacity: 1;
 }
 
 .ui-menubar {
