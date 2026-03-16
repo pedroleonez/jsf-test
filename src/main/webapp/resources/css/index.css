@@ -42,6 +42,12 @@ body {
     border-bottom: 1px solid #cfd8dc;
 }
 
+.app-title {
+    font-weight: bold;
+    font-size: 2rem;
+    opacity: 1;
+}
+
 .ui-menubar {
     background: transparent !important;
     border: none !important;
@@ -121,6 +127,10 @@ body {
 
     .filtro-grid {
         grid-template-columns: 1fr;
+    }
+
+    .app-title {
+        font-size: 1.5rem;
     }
 
     .form-actions {
