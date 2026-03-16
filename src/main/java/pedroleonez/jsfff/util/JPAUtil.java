@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ApplicationScoped
+/**
+ * Produz EntityManager por requisição e permite sobrescrever a conexão via variáveis de ambiente.
+ */
 public class JPAUtil {
 
     private static final EntityManagerFactory factory = buildFactory();
@@ -19,6 +22,7 @@ public class JPAUtil {
     private static EntityManagerFactory buildFactory() {
         Map<String, Object> overrides = new HashMap<>();
 
+        // Aceita tanto configuração explícita quanto o formato DATABASE_URL comum em deploys cloud.
         String jdbcUrl = getenv("JDBC_URL");
         if (jdbcUrl == null) {
             jdbcUrl = toJdbcUrl(getenv("DATABASE_URL"));
@@ -65,6 +69,7 @@ public class JPAUtil {
             int port = uri.getPort() > 0 ? uri.getPort() : 5432;
             String path = uri.getPath() != null ? uri.getPath() : "";
             String query = uri.getQuery();
+            // Converte URLs do tipo postgres://... para o formato JDBC esperado pelo driver.
             String jdbc = "jdbc:postgresql://" + uri.getHost() + ":" + port + path;
             if (query != null && !query.isBlank()) {
                 jdbc = jdbc + "?" + query;
@@ -78,6 +83,7 @@ public class JPAUtil {
     @Produces
     @RequestScoped
     public EntityManager getEntityManager() {
+        // Cada request recebe seu próprio EntityManager, evitando compartilhar contexto entre usuários.
         return factory.createEntityManager();
     }
 }

@@ -10,6 +10,7 @@
 
     <cc:implementation>
         <h:form id="formConfirmacao">
+            <!-- Dialog global reutilizado automaticamente pelos botões que usam p:confirm. -->
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
                              appendTo="@(body)" position="center" styleClass="confirmacao-dialog">
                 <p:commandButton value="#{cc.attrs.noLabel}" type="button"

@@ -7,6 +7,10 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
+/**
+ * Entidade principal da aplicação. Representa uma tarefa com validações declarativas
+ * usadas tanto pela persistência quanto pela camada web.
+ */
 @Entity
 public class Tarefa {
     @Id
@@ -28,8 +32,10 @@ public class Tarefa {
 
     @NotNull(message = "A prioridade é obrigatória")
     @Enumerated(EnumType.STRING)
+    // Enum salvo como texto para manter legibilidade e evitar dependência da ordem ordinal.
     private Prioridade prioridade;
 
+    // Novas tarefas começam abertas e só mudam de estado pela ação de concluir.
     private boolean concluida = false;
 
     public Long getId() {

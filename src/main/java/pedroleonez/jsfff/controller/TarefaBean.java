@@ -19,6 +19,10 @@ import java.util.stream.Collectors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Bean de view que concentra o estado da tela principal e encaminha as ações do usuário
+ * para a camada de serviço.
+ */
 @Named
 @ViewScoped
 public class TarefaBean implements Serializable {
@@ -46,6 +50,7 @@ public class TarefaBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        // Carrega a listagem inicial assim que a view é criada.
         atualizarLista();
     }
 
@@ -67,8 +72,7 @@ public class TarefaBean implements Serializable {
      * ou passar os parâmetros para o Service/Repository buscar no SQL (Recomendado para o teste).
      */
     public void buscar() {
-        // Opção robusta: Chamar o serviço passando os filtros
-        // Para fins de teste rápido, você pode filtrar a lista atual ou recarregar do banco:
+        // Os filtros são enviados ao serviço para que a busca aconteça no banco.
         this.tarefas = service.listarComFiltros(filtroId, filtroTexto, filtroResponsavel, filtroConcluida);
 
         if (tarefas.isEmpty()) {
@@ -77,6 +81,7 @@ public class TarefaBean implements Serializable {
     }
 
     public void prepararEdicao(Tarefa t) {
+        // Reaproveita o formulário de cadastro para editar o registro selecionado.
         this.tarefa = t;
     }
 
@@ -122,6 +127,7 @@ public class TarefaBean implements Serializable {
     }
 
     public LocalDate getDataAtual() {
+        // Usado pelo date picker para impedir seleção de datas passadas.
         return LocalDate.now();
     }
 
@@ -150,7 +156,7 @@ public class TarefaBean implements Serializable {
 
     public Prioridade[] getPrioridades() { return Prioridade.values(); }
 
-    // Método auxiliar para o Select de Responsáveis (evita duplicados na lista de filtro)
+    // Alimenta o select de responsáveis sem repetir nomes já existentes na listagem.
     public List<String> getListaResponsaveis() {
         return tarefas.stream()
                 .map(Tarefa::getResponsavel)

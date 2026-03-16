@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Camada de negócio responsável por validar operações e controlar transações antes
+ * de delegar a persistência ao repositório.
+ */
 public class TarefaService implements Serializable {
 
     @Serial
@@ -34,6 +38,7 @@ public class TarefaService implements Serializable {
             throw new ValidationException("Nenhuma tarefa foi informada para salvar.");
         }
 
+        // A transação fica concentrada no serviço para manter a regra de negócio consistente.
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
@@ -67,10 +72,10 @@ public class TarefaService implements Serializable {
     }
 
     /**
-     * Novo método para busca avançada com filtros dinâmicos
+     * Método para busca avançada com filtros dinâmicos
      */
     public List<Tarefa> listarComFiltros(Long id, String texto, String responsavel, Boolean concluida) {
-        // Chamamos o repository que conterá a lógica de Criteria API ou JPQL dinâmica
+        // O repositório monta a consulta dinamicamente de acordo com os filtros preenchidos.
         try {
             return repository.buscarComFiltros(id, texto, responsavel, concluida);
         } catch (PersistenceException | IllegalArgumentException e) {
@@ -120,6 +125,7 @@ public class TarefaService implements Serializable {
             if (t == null) {
                 throw new ResourceNotFoundException("A tarefa selecionada nao foi encontrada.");
             }
+            // Evita retrabalho e mantém a ação idempotente do ponto de vista funcional.
             if (t.isConcluida()) {
                 throw new ValidationException("A tarefa selecionada ja esta concluida.");
             }
@@ -142,6 +148,7 @@ public class TarefaService implements Serializable {
     }
 
     private void validarTarefaExistente(Long id) {
+        // Garante que a exclusão só ocorra para registros ainda existentes no banco.
         if (repository.buscarPorId(id) == null) {
             throw new ResourceNotFoundException("A tarefa selecionada nao existe mais.");
         }

@@ -8,11 +8,13 @@
 </h:head>
 
 <h:body>
+    <!-- Growl centraliza mensagens vindas do bean e do handler global de exceções. -->
     <p:growl id="messages" showDetail="true"/>
 
     <app:header title="Gerenciador de Tarefas"/>
 
     <div class="content">
+        <!-- O formulário de cadastro e a listagem compartilham o mesmo TarefaBean da view. -->
         <app:cadastroForm id="cadastroComp"/>
         <app:listagemForm id="listagemComp"/>
     </div>

@@ -13,6 +13,10 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Intercepta exceções não tratadas no ciclo JSF e converte falhas técnicas ou de negócio
+ * em mensagens amigáveis para a interface.
+ */
 public class GlobalExceptionHandler extends ExceptionHandlerWrapper {
 
     private static final Logger LOGGER = Logger.getLogger(GlobalExceptionHandler.class.getName());
@@ -51,6 +55,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerWrapper {
                         "Erro",
                         userMessage
                 ));
+                // Mantém a mensagem disponível após o redirect para a mesma view.
                 facesContext.getExternalContext().getFlash().setKeepMessages(true);
 
                 String viewId = facesContext.getViewRoot() != null
@@ -68,6 +73,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerWrapper {
     }
 
     private Throwable resolveRootCause(Throwable throwable) {
+        // Caminha até a causa mais profunda para logar e exibir a mensagem mais útil.
         Throwable current = throwable;
         while (current.getCause() != null) {
             current = current.getCause();

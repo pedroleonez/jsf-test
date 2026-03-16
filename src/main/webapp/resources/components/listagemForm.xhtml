@@ -9,6 +9,7 @@
     <cc:implementation>
         <h:form id="formListagem">
             <p:panel header="Consultar Tarefas" styleClass="form-panel">
+                <!-- Os filtros alimentam uma busca dinâmica no banco via service/repository. -->
                 <h:panelGroup layout="block" styleClass="filtro-grid">
                     <h:panelGroup layout="block" styleClass="form-field">
                         <p:outputLabel value="Número:" style="display:block"/>
@@ -46,6 +47,7 @@
             <p:dataTable id="tabelaTarefas" value="#{tarefaBean.tarefas}" var="t"
                          emptyMessage="Nenhuma tarefa encontrada." paginator="true" rows="10"
                          paginatorPosition="bottom" reflow="true">
+                <!-- A tabela sempre reflete a lista mantida no bean após salvar, buscar, concluir ou remover. -->
                 <p:column headerText="Número" width="80" sortBy="#{t.id}">
                     <h:outputText value="#{t.id}"/>
                 </p:column>
@@ -58,6 +60,7 @@
                 <p:column headerText="Ações" width="200" styleClass="actions-column">
                     <p:commandButton icon="pi pi-pencil" action="#{tarefaBean.prepararEdicao(t)}"
                                      update=":cadastroComp:formCadastro" styleClass="ui-button-outlined ui-button-info mr-2"/>
+                    <!-- Concluir só aparece para tarefas abertas, evitando uma ação inválida na UI. -->
                     <p:commandButton icon="pi pi-check" action="#{tarefaBean.concluir(t)}"
                                      update="formListagem :messages" rendered="#{!t.concluida}"
                                      styleClass="ui-button-outlined ui-button-success mr-2"/>

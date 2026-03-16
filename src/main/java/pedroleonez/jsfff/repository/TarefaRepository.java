@@ -14,6 +14,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Camada de acesso a dados que encapsula operações JPA da entidade Tarefa.
+ */
 public class TarefaRepository implements Serializable {
 
     @Serial
@@ -23,6 +26,7 @@ public class TarefaRepository implements Serializable {
     private EntityManager em;
 
     public void salvar(Tarefa tarefa) {
+        // Persist para novos registros e merge para edições de tarefas já existentes.
         if (tarefa.getId() == null) {
             em.persist(tarefa);
         } else {
@@ -43,6 +47,7 @@ public class TarefaRepository implements Serializable {
         CriteriaQuery<Tarefa> cq = cb.createQuery(Tarefa.class);
         Root<Tarefa> tarefa = cq.from(Tarefa.class);
 
+        // Cada filtro preenchido adiciona um predicado; campos vazios são ignorados.
         List<Predicate> predicates = new ArrayList<>();
 
         // Filtro por Número (ID)
@@ -55,6 +60,7 @@ public class TarefaRepository implements Serializable {
             String likeText = "%" + texto.toLowerCase() + "%";
             Predicate titleLike = cb.like(cb.lower(tarefa.get("titulo")), likeText);
             Predicate descLike = cb.like(cb.lower(tarefa.get("descricao")), likeText);
+            // Um único texto pode combinar tanto com o título quanto com a descrição.
             predicates.add(cb.or(titleLike, descLike));
         }
 
@@ -82,6 +88,7 @@ public class TarefaRepository implements Serializable {
     public void excluir(Long id) {
         Tarefa t = buscarPorId(id);
         if (t != null) {
+            // O merge reanexa a entidade quando ela não está mais sendo gerenciada pelo contexto atual.
             em.remove(em.contains(t) ? t : em.merge(t));
         }
     }
