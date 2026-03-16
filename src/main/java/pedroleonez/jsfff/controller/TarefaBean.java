@@ -6,6 +6,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import pedroleonez.jsfff.exception.ApplicationException;
 import pedroleonez.jsfff.model.Tarefa;
 import pedroleonez.jsfff.model.Prioridade;
 import pedroleonez.jsfff.service.TarefaService;
@@ -15,6 +16,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Named
 @ViewScoped
@@ -22,6 +25,8 @@ public class TarefaBean implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    private static final Logger LOGGER = Logger.getLogger(TarefaBean.class.getName());
 
     @Inject
     private TarefaService service;
@@ -47,11 +52,12 @@ public class TarefaBean implements Serializable {
     public void salvar() {
         try {
             service.salvar(tarefa);
-            adicionarMensagem("Sucesso!", "Tarefa salva com êxito.");
+            adicionarMensagemInfo("Sucesso!", "Tarefa salva com exito.");
             tarefa = new Tarefa();
             atualizarLista();
-        } catch (Exception e) {
-            adicionarMensagem("Erro", "Falha ao salvar tarefa: " + e.getMessage());
+        } catch (ApplicationException e) {
+            LOGGER.log(Level.WARNING, "Falha de negocio ao salvar tarefa", e);
+            adicionarMensagemErro("Erro", e.getUserMessage());
         }
     }
 
@@ -66,7 +72,7 @@ public class TarefaBean implements Serializable {
         this.tarefas = service.listarComFiltros(filtroId, filtroTexto, filtroResponsavel, filtroConcluida);
 
         if (tarefas.isEmpty()) {
-            adicionarMensagem("Informação", "Nenhuma tarefa encontrada para os critérios.");
+            adicionarMensagemInfo("Informacao", "Nenhuma tarefa encontrada para os criterios.");
         }
     }
 
@@ -77,30 +83,42 @@ public class TarefaBean implements Serializable {
     public void concluir(Tarefa t) {
         try {
             service.concluir(t);
-            adicionarMensagem("Concluída", "Tarefa marcada como concluída.");
+            adicionarMensagemInfo("Concluida", "Tarefa marcada como concluida.");
             atualizarLista();
-        } catch (Exception e) {
-            adicionarMensagem("Erro", "Não foi possível concluir a tarefa.");
+        } catch (ApplicationException e) {
+            LOGGER.log(Level.WARNING, "Falha de negocio ao concluir tarefa", e);
+            adicionarMensagemErro("Erro", e.getUserMessage());
         }
     }
 
     public void remover(Tarefa t) {
         try {
             service.remover(t);
-            adicionarMensagem("Removida", "Tarefa excluída do sistema.");
+            adicionarMensagemInfo("Removida", "Tarefa excluida do sistema.");
             atualizarLista();
-        } catch (Exception e) {
-            adicionarMensagem("Erro", "Erro ao remover: " + e.getMessage());
+        } catch (ApplicationException e) {
+            LOGGER.log(Level.WARNING, "Falha de negocio ao remover tarefa", e);
+            adicionarMensagemErro("Erro", e.getUserMessage());
         }
     }
 
     private void atualizarLista() {
-        this.tarefas = service.listarTodas();
+        try {
+            this.tarefas = service.listarTodas();
+        } catch (ApplicationException e) {
+            LOGGER.log(Level.WARNING, "Falha de negocio ao atualizar lista de tarefas", e);
+            adicionarMensagemErro("Erro", e.getUserMessage());
+        }
     }
 
-    private void adicionarMensagem(String resumo, String detalhe) {
+    private void adicionarMensagemInfo(String resumo, String detalhe) {
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, resumo, detalhe));
+    }
+
+    private void adicionarMensagemErro(String resumo, String detalhe) {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, resumo, detalhe));
     }
 
     public LocalDate getDataAtual() {

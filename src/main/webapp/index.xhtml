@@ -5,114 +5,240 @@
 <h:head>
     <title>Gerenciador de Tarefas - JSF</title>
     <style>
-        body { margin: 0; font-family: sans-serif; background-color: #f4f7f6; }
-        .concluida { color: #888; text-decoration: line-through; }
-        .prioridade-alta { font-weight: bold; color: #d9534f; }
-        .filtro-panel { margin-bottom: 15px; background-color: #f9f9f9; }
-        .actions-column { text-align: center; }
-
-        /* Estilos do Layout */
-        .header {
-            position: sticky; top: 0; z-index: 1000; margin-bottom: 20px;
-            background-color: #eceff1; border-bottom: 1px solid #cfd8dc;
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background-color: #f4f7f6;
         }
-        .ui-menubar { background: transparent !important; border: none !important; }
 
-        .content { padding: 0 20px; min-height: calc(100vh - 160px); }
+        .concluida {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .prioridade-alta {
+            font-weight: bold;
+            color: #d9534f;
+        }
+
+        .form-panel {
+            max-width: 1120px;
+            margin: 0 auto 20px;
+        }
+
+        .form-panel.ui-panel {
+            background-color: #f9f9f9;
+        }
+
+        .actions-column {
+            text-align: center;
+        }
+
+        .actions-column .ui-button {
+            margin: 0 2px;
+        }
+
+        .header {
+            top: 0;
+            margin-bottom: 20px;
+            background-color: #eceff1;
+            border-bottom: 1px solid #cfd8dc;
+        }
+
+        .ui-menubar {
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .content {
+            padding: 0 20px;
+            min-height: calc(100vh - 160px);
+        }
 
         .footer {
             background-color: #eceff1;
             border-top: 1px solid #dee2e6;
-            padding: 15px;
+            padding: 10px;
             text-align: center;
             margin-top: 40px;
         }
-        .footer img { height: 25px; transition: opacity 0.3s; }
-        .footer img:hover { opacity: 0.7; }
+
+        .footer img {
+            height: 30px;
+            transition: opacity 0.3s;
+        }
+
+        .footer img:hover {
+            opacity: 0.7;
+        }
+
+        .cadastro-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(240px, 1fr));
+            gap: 16px 20px;
+            align-items: end;
+        }
+
+        .filtro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(180px, 1fr));
+            gap: 16px 20px;
+            align-items: end;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-field .ui-inputfield,
+        .form-field .ui-selectonemenu,
+        .form-field .ui-calendar,
+        .form-field .ui-datepicker,
+        .form-field textarea {
+            width: 100%;
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .filtro-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 8px;
+        }
+
+        .confirmacao-dialog.ui-dialog {
+            width: min(420px, calc(100vw - 32px)) !important;
+            max-width: calc(100vw - 32px);
+        }
+
+        @media (max-width: 768px) {
+            .cadastro-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filtro-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                justify-content: stretch;
+            }
+
+            .filtro-footer {
+                justify-content: stretch;
+            }
+
+            .form-actions .ui-button {
+                width: 100%;
+            }
+
+            .filtro-footer .ui-button {
+                width: 100%;
+            }
+        }
     </style>
 </h:head>
 
 <h:body>
-    <p:growl id="messages" showDetail="true" />
+    <p:growl id="messages" showDetail="true"/>
 
     <div class="header">
         <h:form id="formHeader">
             <p:menubar>
                 <p:menuitem value="Gerenciador de Tarefas" disabled="true"
-                            style="font-weight: bold; color: #333; opacity: 1;" />
+                            style="font-weight: bold; font-size: 36px; color: #333; opacity: 1;"/>
             </p:menubar>
         </h:form>
     </div>
 
     <div class="content">
         <h:form id="formCadastro">
-            <p:panel header="Cadastrar Tarefa" toggleable="true" style="margin-bottom: 20px">
-                <h:panelGrid columns="4" cellpadding="7">
-                    <p:outputLabel for="titulo" value="Título:" style="font-weight:bold" />
-                    <p:inputText id="titulo" value="#{tarefaBean.tarefa.titulo}"
-                                 required="true" requiredMessage="O título é obrigatório." />
+            <p:panel header="Cadastrar Tarefa" toggleable="true" styleClass="form-panel">
+                <h:panelGroup layout="block" styleClass="cadastro-grid">
+                    <h:panelGroup layout="block" styleClass="form-field">
+                        <p:outputLabel for="titulo" value="Título:" style="font-weight:bold"/>
+                        <p:inputText id="titulo" value="#{tarefaBean.tarefa.titulo}"
+                                     required="true" requiredMessage="O título é obrigatório."/>
+                    </h:panelGroup>
 
-                    <p:outputLabel for="responsavel" value="Responsável:" style="font-weight:bold" />
-                    <p:inputText id="responsavel" value="#{tarefaBean.tarefa.responsavel}"
-                                 required="true" requiredMessage="O responsável é obrigatório." />
+                    <h:panelGroup layout="block" styleClass="form-field">
+                        <p:outputLabel for="responsavel" value="Responsável:" style="font-weight:bold"/>
+                        <p:inputText id="responsavel" value="#{tarefaBean.tarefa.responsavel}"
+                                     required="true" requiredMessage="O responsável é obrigatório."/>
+                    </h:panelGroup>
 
-                    <p:outputLabel for="prioridade" value="Prioridade:" style="font-weight:bold" />
-                    <p:selectOneMenu id="prioridade" value="#{tarefaBean.tarefa.prioridade}"
-                                     required="true" requiredMessage="A prioridade é obrigatória.">
-                        <f:selectItem itemLabel="Selecione..." itemValue="" />
-                        <f:selectItems value="#{tarefaBean.prioridades}" />
-                    </p:selectOneMenu>
+                    <h:panelGroup layout="block" styleClass="form-field">
+                        <p:outputLabel for="prioridade" value="Prioridade:" style="font-weight:bold"/>
+                        <p:selectOneMenu id="prioridade" value="#{tarefaBean.tarefa.prioridade}"
+                                         required="true" requiredMessage="A prioridade é obrigatória.">
+                            <f:selectItem itemLabel="Selecione..." itemValue=""/>
+                            <f:selectItems value="#{tarefaBean.prioridades}"/>
+                        </p:selectOneMenu>
+                    </h:panelGroup>
 
-                    <p:outputLabel for="deadline" value="Deadline:" style="font-weight:bold" />
-                    <p:datePicker id="deadline" value="#{tarefaBean.tarefa.deadline}"
-                                  showIcon="true" required="true"
-                                  mindate="#{tarefaBean.dataAtual}"
-                                  requiredMessage="O prazo (deadline) é obrigatório." />
+                    <h:panelGroup layout="block" styleClass="form-field">
+                        <p:outputLabel for="deadline" value="Deadline:" style="font-weight:bold"/>
+                        <p:datePicker id="deadline" value="#{tarefaBean.tarefa.deadline}"
+                                      showIcon="true" required="true"
+                                      mindate="#{tarefaBean.dataAtual}"
+                                      requiredMessage="O prazo (deadline) é obrigatório."/>
+                    </h:panelGroup>
 
-                    <p:outputLabel for="desc" value="Descrição:" style="font-weight:bold" />
-                    <p:inputTextarea id="desc" value="#{tarefaBean.tarefa.descricao}"
-                                     rows="2" cols="30" required="true"
-                                     requiredMessage="A descrição é obrigatória." />
+                    <h:panelGroup layout="block" styleClass="form-field">
+                        <p:outputLabel for="desc" value="Descrição:" style="font-weight:bold"/>
+                        <p:inputTextarea id="desc" value="#{tarefaBean.tarefa.descricao}"
+                                         rows="2" required="true"
+                                         requiredMessage="A descrição é obrigatória."/>
+                    </h:panelGroup>
 
-                    <h:panelGroup />
-                    <p:commandButton value="Salvar" action="#{tarefaBean.salvar}"
-                                     update="@form :formListagem :messages"
-                                     icon="pi pi-save" styleClass="ui-button-success" />
-                </h:panelGrid>
+                    <h:panelGroup layout="block" styleClass="form-actions">
+                        <p:commandButton value="Salvar" action="#{tarefaBean.salvar}"
+                                         update="@form :formListagem :messages"
+                                         icon="pi pi-save" styleClass="ui-button-success"/>
+                    </h:panelGroup>
+                </h:panelGroup>
             </p:panel>
         </h:form>
 
         <h:form id="formListagem">
-            <p:panel header="Consultar Tarefas" styleClass="filtro-panel">
-                <h:panelGrid columns="4" cellpadding="7">
-                    <h:panelGroup>
-                        <p:outputLabel value="Número:" style="display:block" />
-                        <p:inputText value="#{tarefaBean.filtroId}" placeholder="Ex: 123" />
+            <p:panel header="Consultar Tarefas" styleClass="form-panel">
+                <h:panelGroup layout="block" styleClass="filtro-grid">
+                    <h:panelGroup layout="block" styleClass="form-field">
+                        <p:outputLabel value="Número:" style="display:block"/>
+                        <p:inputText value="#{tarefaBean.filtroId}" placeholder="Ex: 123"/>
                     </h:panelGroup>
-                    <h:panelGroup>
-                        <p:outputLabel value="Título / Descrição:" style="display:block" />
-                        <p:inputText value="#{tarefaBean.filtroTexto}" placeholder="Pesquisar..." />
+                    <h:panelGroup layout="block" styleClass="form-field">
+                        <p:outputLabel value="Título / Descrição:" style="display:block"/>
+                        <p:inputText value="#{tarefaBean.filtroTexto}" placeholder="Pesquisar..."/>
                     </h:panelGroup>
-                    <h:panelGroup>
-                        <p:outputLabel value="Responsável:" style="display:block" />
+                    <h:panelGroup layout="block" styleClass="form-field">
+                        <p:outputLabel value="Responsável:" style="display:block"/>
                         <p:selectOneMenu value="#{tarefaBean.filtroResponsavel}">
-                            <f:selectItem itemLabel="Todos" itemValue="" />
-                            <f:selectItems value="#{tarefaBean.listaResponsaveis}" />
+                            <f:selectItem itemLabel="Todos" itemValue=""/>
+                            <f:selectItems value="#{tarefaBean.listaResponsaveis}"/>
                         </p:selectOneMenu>
                     </h:panelGroup>
-                    <h:panelGroup>
-                        <p:outputLabel value="Situação:" style="display:block" />
+                    <h:panelGroup layout="block" styleClass="form-field">
+                        <p:outputLabel value="Situação:" style="display:block"/>
                         <p:selectOneMenu value="#{tarefaBean.filtroConcluida}">
-                            <f:selectItem itemLabel="Todas" itemValue="#{null}" />
-                            <f:selectItem itemLabel="Em andamento" itemValue="false" />
-                            <f:selectItem itemLabel="Concluída" itemValue="true" />
+                            <f:selectItem itemLabel="Todas" itemValue="#{null}"/>
+                            <f:selectItem itemLabel="Em andamento" itemValue="false"/>
+                            <f:selectItem itemLabel="Concluída" itemValue="true"/>
                         </p:selectOneMenu>
                     </h:panelGroup>
-                </h:panelGrid>
+                </h:panelGroup>
                 <f:facet name="footer">
-                    <p:commandButton value="Buscar Tarefas" action="#{tarefaBean.buscar}"
-                                     icon="pi pi-search" update="tabelaTarefas :messages"
-                                     styleClass="ui-button-raised" />
+                    <h:panelGroup layout="block" styleClass="filtro-footer">
+                        <p:commandButton value="Buscar Tarefas" action="#{tarefaBean.buscar}"
+                                         icon="pi pi-search" update="tabelaTarefas :messages"
+                                         styleClass="ui-button-raised"/>
+                    </h:panelGroup>
                 </f:facet>
             </p:panel>
 
@@ -120,23 +246,23 @@
                          emptyMessage="Nenhuma tarefa encontrada." paginator="true" rows="10"
                          paginatorPosition="bottom" reflow="true">
                 <p:column headerText="Número" width="80" sortBy="#{t.id}">
-                    <h:outputText value="#{t.id}" />
+                    <h:outputText value="#{t.id}"/>
                 </p:column>
                 <p:column headerText="Título" sortBy="#{t.titulo}">
-                    <h:outputText value="#{t.titulo}" styleClass="#{t.concluida ? 'concluida' : ''}" />
+                    <h:outputText value="#{t.titulo}" styleClass="#{t.concluida ? 'concluida' : ''}"/>
                 </p:column>
                 <p:column headerText="Responsável" sortBy="#{t.responsavel}">
-                    <h:outputText value="#{t.responsavel}" />
+                    <h:outputText value="#{t.responsavel}"/>
                 </p:column>
                 <p:column headerText="Ações" width="200" styleClass="actions-column">
                     <p:commandButton icon="pi pi-pencil" action="#{tarefaBean.prepararEdicao(t)}"
-                                     update=":formCadastro" styleClass="ui-button-outlined ui-button-info mr-2" />
+                                     update=":formCadastro" styleClass="ui-button-outlined ui-button-info mr-2"/>
                     <p:commandButton icon="pi pi-check" action="#{tarefaBean.concluir(t)}"
                                      update="formListagem :messages" rendered="#{!t.concluida}"
-                                     styleClass="ui-button-outlined ui-button-success mr-2" />
+                                     styleClass="ui-button-outlined ui-button-success mr-2"/>
                     <p:commandButton icon="pi pi-trash" action="#{tarefaBean.remover(t)}"
                                      update="formListagem :messages" styleClass="ui-button-outlined ui-button-danger">
-                        <p:confirm header="Confirmação" message="Excluir esta tarefa?" />
+                        <p:confirm header="Confirmação" message="Excluir esta tarefa?"/>
                     </p:commandButton>
                 </p:column>
             </p:dataTable>
@@ -146,18 +272,19 @@
     <div class="footer">
         <h:form id="formFooter">
             <h:outputLink value="https://www.esig.com.br" target="_blank">
-                <p:graphicImage library="images" name="logo-esig.webp" alt="Logo ESIG" />
+                <p:graphicImage library="images" name="logo-esig.webp" alt="Logo ESIG"/>
             </h:outputLink>
-            <p>© 2026 Desenvolvido por Pedro Leonez</p>
+            <p>© 2026 Desenvolvido por Pedro Leonez.</p>
         </h:form>
     </div>
 
     <h:form id="formConfirmacao">
-        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat" icon="pi pi-times" />
-            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+                         appendTo="@(body)" position="center" styleClass="confirmacao-dialog">
+            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"
+                             icon="pi pi-times"/>
+            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
         </p:confirmDialog>
     </h:form>
-
 </h:body>
 </html>
